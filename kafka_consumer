@@ -1,0 +1,24 @@
+import datetime
+import sys
+from kafka import SimpleClient,KafkaConsumer
+
+address = ('localhost', 6005)
+client=SimpleClient('localhost:9092')
+consumer=KafkaConsumer('my_topic',group_id='my-group',bootstrap_servers=['localhost:9092'])
+print 'start'
+i=0
+l=[]
+for x in consumer:
+    i+=1
+    l.append(x.value+'\n')
+    print 'receiving'
+    print x.value
+
+    if i>4000:
+        f=open(str(sys.argv[1])+str(datetime.datetime.now())[:18]+'.txt','wa')
+        f.writelines(l)
+        #print 'write'
+        f.close()
+        l=[]
+        i=0
+
